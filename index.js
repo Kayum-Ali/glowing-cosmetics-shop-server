@@ -69,7 +69,7 @@ async function run() {
 
     app.post('/review', async(req,res)=>{
      const userReview = req.body
-     console.log(userReview);
+    //  console.log(userReview);
      const doc = {
       name: userReview.name,
       review: userReview.review,
