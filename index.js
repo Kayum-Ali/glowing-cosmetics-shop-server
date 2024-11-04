@@ -7,7 +7,7 @@ const port = process.env.PORT || 5000;
 
 var corsOptions = {
   origin: [ 'https://glowing-cosmetics-shop.web.app', 'http://localhost:5173'],
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  optionsSuccessStatus: 200 
 }
 
 
@@ -34,6 +34,7 @@ async function run() {
      const productsCollection = database.collection("featuredProductsCollection");
      const reviewCollection = database.collection("reviewCollection");
      const topSaverCollection = database.collection("topSaver");
+     const topSaverReviewCollection = database.collection("topSaverReview")
 
     app.get('/featured-products', async(req,res)=>{
         const cursor =  productsCollection.find({});
@@ -79,6 +80,31 @@ async function run() {
      
     })
 
+    // top saver review
+    app.get('/top-Saver-Review', async(req,res)=>{
+      const cursor =  topSaverReviewCollection.find({});
+        const result = await cursor.toArray();
+        res.send(result);
+        console.log('result: ', result);
+
+    })
+
+
+    app.post('/top-Saver-Review', async(req,res)=>{
+     const userReview = req.body
+     const doc = {
+      name: userReview.name,
+      review: userReview.review,
+      rating: userReview.rating,
+      email: userReview.email,
+      photo: userReview.photo,
+      formattedDate : userReview.formattedDate
+     }
+     const result = await topSaverReviewCollection.insertOne(doc)
+     res.send(result)
+     
+    })
+
     // top saver data
     app.get('/top-savers', async(req,res)=>{
       const cursor =  topSaverCollection.find({});
@@ -91,7 +117,7 @@ async function run() {
         const id = req.params.id;
         const saver = await topSaverCollection.findOne({_id:new ObjectId(id)})
         res.send(saver)
-        console.log(saver);
+        // console.log(saver);
       
     })
     await client.db("admin").command({ ping: 1 });
