@@ -34,7 +34,8 @@ async function run() {
      const productsCollection = database.collection("featuredProductsCollection");
      const reviewCollection = database.collection("reviewCollection");
      const topSaverCollection = database.collection("topSaver");
-     const topSaverReviewCollection = database.collection("topSaverReview")
+     const topSaverReviewCollection = database.collection("topSaverReview");
+     const addtoCartCollection = database.collection("addToCart");
 
     app.get('/featured-products', async(req,res)=>{
         const cursor =  productsCollection.find({});
@@ -85,7 +86,7 @@ async function run() {
       const cursor =  topSaverReviewCollection.find({});
         const result = await cursor.toArray();
         res.send(result);
-        console.log('result: ', result);
+        
 
     })
 
@@ -117,9 +118,15 @@ async function run() {
         const id = req.params.id;
         const saver = await topSaverCollection.findOne({_id:new ObjectId(id)})
         res.send(saver)
-        // console.log(saver);
-      
-    })
+      })  
+
+      // addtoCart
+      app.post('/addtoCart', async(req,res)=>{
+        const data = req.body
+        const cartData = await addtoCartCollection.insertOne(data);
+        res.send(cartData)
+
+      })
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
