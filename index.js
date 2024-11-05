@@ -157,6 +157,28 @@ async function run() {
             }
         });
 
+        app.put('/addtoCart/:id', async (req, res) => {
+          const prodId = req.params.id; // URL থেকে prodId নেওয়া
+          const { quantity } = req.body; // বডি থেকে quantity নেওয়া
+      
+          try {
+              // ডাটাবেসে নির্দিষ্ট prodId এর ডেটা আপডেট করা
+              const updatedData = await addtoCartCollection.updateOne(
+                  { prodId: prodId }, // prodId দিয়ে ফিল্টার করা হচ্ছে
+                  { $set: { quantity: quantity } }
+              );
+      
+              if (updatedData.modifiedCount > 0) {
+                  res.status(200).json({ message: 'Quantity updated successfully' });
+              } else {
+                  res.status(404).json({ message: 'Item not found or quantity unchanged' });
+              }
+          } catch (error) {
+              console.error(error);
+              res.status(500).json({ message: 'Failed to update quantity', error: error.message });
+          }
+      });
+
         await client.db("admin").command({ ping: 1 });
         console.log(
             "Pinged your deployment. You successfully connected to MongoDB!"
