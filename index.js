@@ -113,7 +113,9 @@ async function run() {
 
         // addtoCart
         app.get("/addtoCart", async (req, res) => {
-            const cursor = addtoCartCollection.find({});
+            const email = req.query.email;
+            console.log(email);
+            const cursor = addtoCartCollection.find({email : email});
             const result = await cursor.toArray();
             res.send(result);
         });
