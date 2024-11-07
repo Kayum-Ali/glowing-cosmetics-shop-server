@@ -169,9 +169,19 @@ async function run() {
             }
             const result = await addtoCartCollection.deleteOne(query);
             if (result.deletedCount > 0) {
-                res.status(200).json({ message: "Deleted from cart successfully" });
+                message = {
+                    status: 200,
+                    message: "Deleted successfully",
+                    data: { exists: false },
+                };
+                return res.json(message);
             } else {
-                res.status(404).json({ message: "Item not found in cart" });
+                message = {
+                    status: 500,
+                    message: "internal server error",
+                    data: { exists: false },
+                };
+                return res.json(message);
             }
             // const result = await addtoCartCollection.deleteOne({ _id: new ObjectId(id) });
         })
