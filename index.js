@@ -158,6 +158,25 @@ async function run() {
             }
         });
 
+        // delete
+        app.delete("/addtoCart/:id", async (req, res) => {
+            const id = req.params.id;
+            const data = req.body;
+            
+            const query = {
+                email: data.email,
+                prodId: id,
+            }
+            const result = await addtoCartCollection.deleteOne(query);
+            if (result.deletedCount > 0) {
+                res.status(200).json({ message: "Deleted from cart successfully" });
+            } else {
+                res.status(404).json({ message: "Item not found in cart" });
+            }
+            // const result = await addtoCartCollection.deleteOne({ _id: new ObjectId(id) });
+        })
+            
+
         app.put('/addtoCart/:id', async (req, res) => {
           const prodId = req.params.id; // URL থেকে prodId নেওয়া
           const { quantity } = req.body; // বডি থেকে quantity নেওয়া
